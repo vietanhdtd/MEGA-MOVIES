@@ -52,7 +52,6 @@ class App extends React.Component {
   }
 
   updateQuery(evt) {
-
     this.setState({
       query: evt.target.value,
       updateAPI: "/search/movie",
@@ -108,13 +107,13 @@ class App extends React.Component {
     this.setState({
       movies: newMovies
     })
-    
   }
+
   loadMoreBtn = () => {
-    const { pageNumber} = this.state
-    this.setState({
-      pageNumber: pageNumber + 1
-    })
+    // const { pageNumber} = this.state
+    // this.setState({
+    //   pageNumber: pageNumber + 1
+    // })
     console.log(this.state.pageNumber)
     return this.getMoviesData()
   }
@@ -127,15 +126,11 @@ class App extends React.Component {
     let data = await response.json();
     let newState = data.results
     this.setState({
+      pageNumber: pageNumber + 1,
       movies: this.state.movies.concat(newState),
       allMovies: this.state.allMovies.concat(newState)
     })
-    // console.log("pageNumber", this.state.pageNumber)
-    // console.log("data", this.state.movies)
   }
-
-
-
 
   getPosterImgUrl(poster_path) {
     return poster_path === null ? `https://previews.123rf.com/images/mousemd/mousemd1710/mousemd171000009/87405336-404-not-found-concept-glitch-style-vector.jpg` : `https://image.tmdb.org/t/p/w500${poster_path}`
@@ -143,16 +138,13 @@ class App extends React.Component {
 
   getMoviesVideos = async (movieId) => {
     const API_KEY = "eb80f0da925cba79d538d53b7ca005cc";
-    const url = `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${API_KEY}&language=en-US    `
+    const url = `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${API_KEY}&language=en-US`
     let response = await fetch(url);
     let data = await response.json();
     this.setState({
       videoKey: data.results[Math.floor(Math.random()*data.results.length)].key,
     })
   }
-
-
-
 
   renderModal = (movieId) => {
     this.getMoviesVideos(movieId)
@@ -250,28 +242,26 @@ class App extends React.Component {
             />
           </Modal>
           <Navbar style={{backgroundColor: 'rgba(52, 52, 52, 0.7)'}} dark expand="md" sticky="top">
-                  <NavbarBrand className ="align-center" href="/"> <img src="https://img.icons8.com/cotton/64/000000/the-oscars.png"width="40" height="40"/>Movie Time</NavbarBrand> 
-                        <Nav navbar>
+            <NavbarBrand className ="align-center" href="/"> <img src="https://img.icons8.com/cotton/64/000000/the-oscars.png"width="40" height="40"/>Movie Time</NavbarBrand> 
+                  <Nav navbar>
+                  <NavItem>
+                        <NavLink href="#" onClick={this.getNowPlayingMovies} className="text-warning">Now Playing</NavLink>
+                      </NavItem>
+                      <NavItem>
+                        <NavLink href="#" onClick={this.getTopRatedMovies} className="text-warning">Top Rated</NavLink>
+                      </NavItem>
+                      <NavItem>
+                        <NavLink href="#" onClick={this.getUpcomingMovies} className="text-warning">Upcoming</NavLink>
+                      </NavItem>
+                  </Nav>
+                <Nav className="ml-auto" navbar>
                         <NavItem>
-                              <NavLink href="#" onClick={this.getNowPlayingMovies} className="text-warning">Now Playing</NavLink>
-                            </NavItem>
-                            <NavItem>
-                              <NavLink href="#" onClick={this.getTopRatedMovies} className="text-warning">Top Rated</NavLink>
-                            </NavItem>
-                            <NavItem>
-                              <NavLink href="#" onClick={this.getUpcomingMovies} className="text-warning">Upcoming</NavLink>
-                            </NavItem>
-                        </Nav>
-                          <Nav className="ml-auto" navbar>
-                                  <NavItem>
-                                  <InputGroup>
-                              <Input placeholder="Find a movie" value={this.state.query} onChange={evt => this.updateQuery(evt)} />
-                              <InputGroupAddon addonType="prepend">
-                                  <Button color="warning"
-                                          className="search-button" onClick={this.getMoviesData}>
-                                      Search
-
-                                  </Button>
+                        <InputGroup>
+                    <Input placeholder="Find a movie" value={this.state.query} onChange={evt => this.updateQuery(evt)} />
+                    <InputGroupAddon addonType="prepend">
+                        <Button color="warning" className="search-button" onClick={this.getMoviesData}>
+                            Search
+                        </Button>
                 </InputGroupAddon>
               </InputGroup>
             </NavItem>
